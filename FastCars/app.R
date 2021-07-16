@@ -29,11 +29,6 @@ ui <- fluidPage(
                         min = 50,
                         max = 400,
                         value = 120),
-            sliderInput("disp",
-                        "Engine Size (cubic inches)",
-                        min = 70,
-                        max = 400,
-                        value = 150),
             selectInput("cyl",
                         "Number of Cylinders",
                         choices = c(4, 6, 8),
@@ -44,8 +39,8 @@ ui <- fluidPage(
         mainPanel(
             h2("Predict Quarter Mile Time"),
             p("This app will allow to you predict how fast a car is over a
-              standing quarter mile. It uses 4 characteristics of a car: Weight, 
-              Horsepower, Engine size and the Number of cylinders as parameters 
+              standing quarter mile. It uses 3 characteristics of a car: Weight, 
+              Horsepower, and the Number of cylinders as parameters 
               for a machine learning linear regression model trained on the MT 
               cars data set"),
             p("Change values in the sidebar to predict the quarter mile time"),
@@ -57,12 +52,11 @@ ui <- fluidPage(
 # Define server logic required to draw a histogram
 server <- function(input, output) {
     data(mtcars)
-    model <- lm(qsec ~ wt + disp + cyl + hp, data = mtcars)
+    model <- lm(qsec ~ wt + cyl + hp, data = mtcars)
     
     output$result <- renderUI({
         new_data = data.frame(wt = input$wt,
                               hp = input$hp,
-                              disp = input$disp,
                               cyl = as.numeric(input$cyl))
         result <- predict(model, new_data)
         h2(paste0("Predicted Time: ", format(result, digits = 2), " seconds"))
